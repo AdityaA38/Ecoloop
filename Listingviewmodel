@@ -1,0 +1,25 @@
+import Foundation
+import CoreLocation
+import SwiftUI
+
+class ListingsViewModel: ObservableObject {
+    @Published var listings: [Listing] = []
+    @Published var selectedCategory: String = "All"
+
+    func addListing(_ listing: Listing) {
+        listings.append(listing)
+    }
+
+    func filteredListings() -> [Listing] {
+        if selectedCategory == "All" {
+            return listings
+        } else {
+            return listings.filter { $0.category == selectedCategory }
+        }
+    }
+
+    func allCategories() -> [String] {
+        let unique = Set(listings.map { $0.category })
+        return ["All"] + unique.sorted()
+    }
+}
