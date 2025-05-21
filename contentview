@@ -1,0 +1,64 @@
+import SwiftUI
+import MapKit
+
+struct ContentView: View {
+    @StateObject private var viewModel = ListingsViewModel()
+    @State private var region = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
+        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+    )
+
+    var body: some View {
+        NavigationView {
+            VStack {
+                Picker("Category", selection: $viewModel.selectedCategory) {
+                    ForEach(viewModel.allCategories(), id: \.self) { category in
+                        Text(category).tag(category)
+                    }
+                }
+                .pickerStyle(MenuPickerStyle())
+                .padding(.horizontal)
+
+
+                ZStack {
+                    Map(coordinateRegion: $region, annotationItems: viewModel.filteredListings()) { item in
+                        MapAnnotation(coordinate: item.coordinate) {
+                            VStack(spacing: 4) {
+                                if let image = item.image {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .frame(width: 40, height: 40)
+                                        .clipShape(Circle())
+                                } else {
+                                    Image(systemName: "leaf.circle")
+                                        .foregroundColor(.green)
+                                        .font(.title)
+                                }
+                                Text(item.title)
+                                    .font(.caption)
+                                Text("Eco+\(item.sustainabilityPoints)")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+                    .ignoresSafeArea()
+
+                    VStack {
+                        Spacer()
+                        NavigationLink(destination: AddListingView(viewModel: viewModel)) {
+                            Text("Add New Listing")
+                                .font(.headline)
+                                .padding()
+                                .background(Color.green)
+                                .foregroundColor(.white)
+                                .cornerRadius(12)
+                                .padding(.bottom, 30)
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Ecoloop")
+        }
+    }
+}
