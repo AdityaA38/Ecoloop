@@ -1,0 +1,22 @@
+//
+//  Listing.swift
+//  Ecoloop
+//
+//  Created by Aditya A on 5/21/25.
+//
+
+import Foundation
+import Foundation
+import CoreLocation
+import UIKit
+
+struct Listing: Identifiable {
+    let id = UUID()
+    let title: String
+    let description: String
+    let coordinate: CLLocationCoordinate2D
+    let image: UIImage?
+    let category: String
+    let datePosted: Date = Date()
+    let sustainabilityPoints: Int
+}
